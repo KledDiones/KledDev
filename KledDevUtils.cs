@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using TMPro;
 using UnityEngine;
 
 namespace KledDev.Utils
@@ -25,10 +26,13 @@ namespace KledDev.Utils
             }
             return instance;
         }
-
         public static void WaitXSecondsForPlayAction(float xSeconds, Action playAction)
         {
             GetInstance().StartCoroutine(WaitXSecondsForPLayActionCoroutine(xSeconds,playAction));
+        }
+        public static void WritingEffect(string text, float delay, TMP_Text target, Action actionInTheEnd = null)
+        {
+            GetInstance().StartCoroutine(WritingEffectRoutine(text,delay,target,actionInTheEnd));
         }
         public static string RemoveAccents(string text)
         {
@@ -58,6 +62,19 @@ namespace KledDev.Utils
         {
             yield return new WaitForSeconds(xSeconds);
             playAction.Invoke();
+        }
+        static IEnumerator WritingEffectRoutine(string text, float delay, TMP_Text target, Action actionInTheEnd = null)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                target.text = text.Substring(0, i);
+                yield return new WaitForSeconds(delay);
+            }
+            target.text = text;
+            yield return new WaitForSeconds(3f);
+
+
+            actionInTheEnd?.Invoke();
         }
     }
 }
